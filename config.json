@@ -1,7 +1,7 @@
 {
   "browserstack_config": {
-      "user": "lokeshyadav_pLNrZ1",
-      "key": "PCWfAzvRwHrEC6ppierE",
+      "user": "${BROWSERSTACK_USER}",
+      "key": "${BROWSERSTACK_KEY}",
       "url": "http://hub-cloud.browserstack.com/wd/hub"
   },
   "parallel_capabilities": [

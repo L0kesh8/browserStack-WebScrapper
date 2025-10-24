@@ -23,15 +23,41 @@ from selenium.common.exceptions import TimeoutException, NoSuchElementException,
 BASE_URL = "https://elpais.com"
 IMAGES_DIR = "scraped_images"
 
+# Load environment variables from .env file
+load_dotenv()
+
 # Load BrowserStack credentials and capabilities
 try:
     with open('config.json', 'r') as f:
         CONFIG = json.load(f)
+    
     BS_CONFIG = CONFIG['browserstack_config']
+    
+    # Fetch and update user and key from environment variables
+    BS_CONFIG['user'] = os.getenv('BROWSERSTACK_USER', BS_CONFIG.get('user', ''))
+    BS_CONFIG['key'] = os.getenv('BROWSERSTACK_KEY', BS_CONFIG.get('key', ''))
+    
+    # Validate that credentials are present
+    if not BS_CONFIG['user'] or not BS_CONFIG['key']:
+        raise ValueError("BrowserStack credentials missing. Set BROWSERSTACK_USER and BROWSERSTACK_KEY environment variables.")
+    
     PARALLEL_CAPS = CONFIG['parallel_capabilities']
+    
+    print("✓ BrowserStack configuration loaded successfully")
+    
+except FileNotFoundError:
+    print("Error: config.json file not found")
+    exit(1)
+except KeyError as e:
+    print(f"Error: Missing required key in config.json: {e}")
+    exit(1)
+except ValueError as e:
+    print(f"Error: {e}")
+    exit(1)
 except Exception as e:
     print(f"Error loading config.json: {e}")
-    exit()
+    exit(1)
+
 
 def rapidapi_translate(text, source_lang, target_lang):
     """
@@ -51,48 +77,24 @@ def rapidapi_translate(text, source_lang, target_lang):
         "x-rapidapi-host": api_host,
         "Content-Type": "application/json"
     }
-    
-    # The API expects an array format
     payload = {
         "from": source_lang,
         "to": target_lang,
-        "q": [text]  # Array format
+        "q": text
     }
 
     try:
         response = requests.post(url, json=payload, headers=headers, timeout=15)
         response.raise_for_status()
         result = response.json()
-        
-        # Debug: print response to understand format
-        # print(f"Translation API Response: {result}")
-        
-        # Try multiple response formats
+        # Expected format may vary, try multiple paths
         if isinstance(result, list) and len(result) > 0:
-            # If it's a direct list of translations
-            if isinstance(result[0], str):
-                return result[0]
-            elif isinstance(result[0], dict):
-                return result[0].get('translatedText', result[0].get('translated', text))
+            return result[0]
         elif isinstance(result, dict):
-            # Check for nested structure
-            if 'translatedText' in result:
-                trans = result['translatedText']
-                return trans[0] if isinstance(trans, list) else trans
-            elif 'translated' in result:
-                trans = result['translated']
-                return trans[0] if isinstance(trans, list) else trans
-            elif 'translations' in result:
-                trans = result['translations']
-                if isinstance(trans, list) and len(trans) > 0:
-                    return trans[0].get('text', trans[0].get('translatedText', text))
-        
+            return result.get('translatedText', result.get('translated', text))
         return text
-    except requests.exceptions.HTTPError as e:
-        print(f"Translation HTTP Error: {e.response.status_code} - {e.response.text[:100]}")
-        return f"[Translation failed: HTTP {e.response.status_code}]"
     except Exception as e:
-        print(f"Translation Error: {str(e)[:100]}")
+        print(f"Translation Error (RapidAPI): {e}")
         return f"[Translation failed: {str(e)[:50]}]"
 
 # --- CORE LOGIC CLASS ---
