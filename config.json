@@ -1,0 +1,34 @@
+{
+  "browserstack_config": {
+      "user": "lokeshyadav_pLNrZ1",
+      "key": "PCWfAzvRwHrEC6ppierE",
+      "url": "http://hub-cloud.browserstack.com/wd/hub"
+  },
+  "parallel_capabilities": [
+      {
+          "bstack:options": {
+              "os": "Windows", "osVersion": "10", "local": "false", "seleniumVersion": "4.0.0", "sessionName": "ElPais Scraper - Win 10 Chrome"
+          }, "browserName": "Chrome", "browserVersion": "latest"
+      },
+      {
+          "bstack:options": {
+              "os": "OS X", "osVersion": "Big Sur", "local": "false", "seleniumVersion": "4.0.0", "sessionName": "ElPais Scraper - Mac Firefox"
+          }, "browserName": "Firefox", "browserVersion": "latest"
+      },
+      {
+          "bstack:options": {
+              "deviceName": "iPhone 12 Pro", "osVersion": "15", "local": "false", "seleniumVersion": "4.0.0", "sessionName": "ElPais Scraper - iPhone Safari"
+          }, "browserName": "Safari"
+      },
+      {
+          "bstack:options": {
+              "deviceName": "Samsung Galaxy S21", "osVersion": "11.0", "local": "false", "seleniumVersion": "4.0.0", "sessionName": "ElPais Scraper - Android Chrome"
+          }, "browserName": "Chrome"
+      },
+      {
+          "bstack:options": {
+              "os": "Windows", "osVersion": "11", "local": "false", "seleniumVersion": "4.0.0", "sessionName": "ElPais Scraper - Win 11 Edge"
+          }, "browserName": "Edge", "browserVersion": "latest"
+      }
+  ]
+}

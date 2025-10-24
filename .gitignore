@@ -1,0 +1,6 @@
+.env
+localScrapper.py
+scraper_local.py
+scraper.py
+article_images
+scraped_images
