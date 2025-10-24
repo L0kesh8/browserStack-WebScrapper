@@ -43,7 +43,7 @@ try:
     
     PARALLEL_CAPS = CONFIG['parallel_capabilities']
     
-    print("✓ BrowserStack configuration loaded successfully")
+    print("BrowserStack configuration loaded successfully")
     
 except FileNotFoundError:
     print("Error: config.json file not found")
